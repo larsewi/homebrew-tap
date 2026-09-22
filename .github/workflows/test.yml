@@ -1,0 +1,53 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+
+      # Exercise the same larsewi/tap/leech2 path a user takes, rather than
+      # installing from a local file.
+      - name: Link the checkout as a tap
+        run: |
+          TAP_DIR="$(brew --repository)/Library/Taps/larsewi/homebrew-tap"
+          mkdir -p "$(dirname "${TAP_DIR}")"
+          ln -s "${GITHUB_WORKSPACE}" "${TAP_DIR}"
+
+      - name: Install
+        run: brew install --verbose larsewi/tap/leech2
+
+      - name: Test
+        run: brew test --verbose larsewi/tap/leech2
+
+      - name: Audit
+        run: brew audit --strict --online larsewi/tap/leech2
+
+      # Both tarballs install cleanly on either architecture; only running them
+      # fails, so a swapped on_arm/on_intel URL would otherwise go unnoticed.
+      - name: Check the architecture
+        run: file "$(brew --prefix leech2)/bin/lch" | grep -q "$(uname -m)"
+
+      - name: Check the dylib install name
+        run: |
+          INSTALL_NAME=$(otool -D "$(brew --prefix leech2)/lib/libleech2.dylib" | tail -n1)
+          echo "install name: ${INSTALL_NAME}"
+          case "${INSTALL_NAME}" in
+            /*/lib/libleech2.dylib) ;;
+            *) echo "::error::install name is not an absolute keg path"; exit 1 ;;
+          esac
+
+      - name: Check the man pages and pkg-config file
+        run: |
+          PREFIX="$(brew --prefix leech2)"
+          test -f "${PREFIX}/share/man/man1/lch.1"
+          test -f "${PREFIX}/share/man/man3/leech2.h.3"
+          grep -qF "prefix=${PREFIX}" "${PREFIX}/lib/pkgconfig/leech2.pc"
