@@ -1,7 +1,8 @@
 #!/bin/bash
-# Point the leech2 formula at a released version and push the change. The
-# checksums come from the release's own checksums.txt, so the formula cannot
-# disagree with what was published. Run from the root of a tap checkout.
+# Point the leech2 formula at a released version. The checksums come from the
+# release's own checksums.txt, so the formula cannot disagree with what was
+# published. Leaves the change uncommitted for the caller to turn into a pull
+# request. Run from the root of a tap checkout.
 #
 # usage: bump-formula.sh <version>
 
@@ -84,9 +85,3 @@ if git diff --quiet -- "${FORMULA}"; then
 fi
 
 git diff -- "${FORMULA}"
-
-git config user.name "github-actions[bot]"
-git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-git add "${FORMULA}"
-git commit -m "Updated leech2 to ${VERSION}"
-git push
