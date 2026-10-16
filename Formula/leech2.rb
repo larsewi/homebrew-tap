@@ -6,13 +6,13 @@ class Leech2 < Formula
   depends_on :macos
 
   on_arm do
-    url "https://github.com/larsewi/leech2/releases/download/v5.7.0/leech2-5.7.0-macos-aarch64.tar.gz"
-    sha256 "212fdbaf70fb2cff6cb42aa7d36a499b2a8704f8591e9f9059645ce8eddc3738"
+    url "https://github.com/larsewi/leech2/releases/download/v6.0.0/leech2-6.0.0-macos-aarch64.tar.gz"
+    sha256 "dbe260d487761719d648b1b1aca49793d73446935eeb4ccecd214bd9256bb1dc"
   end
 
   on_intel do
-    url "https://github.com/larsewi/leech2/releases/download/v5.7.0/leech2-5.7.0-macos-x86_64.tar.gz"
-    sha256 "c097d82565792964c38e202fba43bd0dcba5575cbb8cdec385f13103d7cdbeec"
+    url "https://github.com/larsewi/leech2/releases/download/v6.0.0/leech2-6.0.0-macos-x86_64.tar.gz"
+    sha256 "2bebb1065da16f6661e012954089a85ef552a7ebc97e6414178ccf68e0f9c5d3"
   end
 
   livecheck do
